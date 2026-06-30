@@ -1684,7 +1684,7 @@ function renderEntry(d){
         <div class="meta-cell"><div class="ml">현금영수증 승인번호</div><div class="mv">${d.cash||'—'}</div></div>
         ${d.nd?`<div class="meta-cell"><div class="ml">불공제사유</div><div class="mv ko" style="color:var(--flag)">${d.nd}</div></div>`:''}
       </div>
-      ${d.lines&&d.lines.length>1?`
+      ${d.lines&&d.lines.length>=1?`
       <div class="usage">
         <div class="usage-head"><span>카드 이용내역 ${d.lines.length}건 · 내역별 계정 지정</span><span class="usage-sum">합계 ₩${fmt(d.lines.reduce((a,l)=>a+l.supply+l.vat,0))}</span></div>
         <div class="usage-table">
