@@ -1168,7 +1168,7 @@
           </div>
           <div class="setting-item">
             <div class="si-label">거래처 코드 초기화</div>
-            <div class="si-desc">브라우저에 저장된 거래처 코드를 모두 삭제합니다.</div>
+            <div class="si-desc">거래처 코드와 신규 등록된 거래처 정보(사업자번호·카드번호 등)를 모두 초기화합니다. 명부에 등록된 기본 거래처 목록은 유지됩니다.</div>
             <button class="btn" id="clearPartyCodes" style="color:var(--flag);border-color:var(--flag)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>코드 초기화</button>
           </div>
         </div>
@@ -5622,9 +5622,19 @@ document.getElementById('undoRules').addEventListener('click',()=>{
 });
 document.getElementById('clearPartyCodes').addEventListener('click',()=>{
   localStorage.removeItem(PARTY_CODE_STORAGE_KEY);
-  Object.values(PARTIES).forEach(function(p){ p.code=''; });
+  Object.keys(PARTIES).forEach(function(key){
+    var p=PARTIES[key];
+    if(p._seed){
+      // 명부(시드) 거래처는 코드·매칭 상태만 초기화, 기본 정보는 유지
+      p.code='';
+      delete p._matched;
+    } else {
+      // 사용자가 추가했거나 자동 추출된 신규 거래처는 통째로 제거
+      delete PARTIES[key];
+    }
+  });
   renderPartyMaster(document.getElementById('partySearch').value);
-  toast('check','초기화됨','브라우저에 저장된 거래처 코드를 삭제했습니다.');
+  toast('check','초기화됨','거래처 코드와 신규 거래처 정보를 모두 초기화했습니다.');
 });
 document.getElementById('clearParsers').addEventListener('click',()=>{
   saveParserSnap();
